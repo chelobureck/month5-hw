@@ -27,6 +27,11 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         ratings = [r.rating for r in all_ratings if r.rating is not None]
         return sum(ratings) / len(ratings)
 
+class ProductDetailSerializer(serializers.ModelSerializer):
+    category = CategoryListSerializer()
+    class Meta:
+        model = ProductModel
+        fields = '__all__'
 
 
 class ProductListSerializer(serializers.ModelSerializer):
