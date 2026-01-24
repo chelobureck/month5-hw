@@ -2,12 +2,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from users.serializers import ConfirmUserSerializer, UserAuthSerializer, UserCreateSerializer
 from users.jwt import jwt, sign_key
 from users.email import send_confirm_email
+from users.models import CustomUser
 
 
 class RegisterAPIView(CreateAPIView):
@@ -16,7 +16,7 @@ class RegisterAPIView(CreateAPIView):
 	def create(self, request,):
 		serializer = self.get_serializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
-		user = User.objects.create_user(**serializer.validated_data, is_active=False) # type: ignore
+		user = CustomUser.objects.create_user(**serializer.validated_data, is_active=False) # type: ignore
 		return Response(status=status.HTTP_201_CREATED, data={"user_id": user.id}) # type: ignore
 
 
@@ -40,7 +40,7 @@ class UserConfirmAPIView(APIView):
 		try:
 			payload = jwt.decode(token, sign_key, do_time_check=True)
 			user_id = payload.get('user_id')
-			user = User.objects.get(id=user_id)
+			user = CustomUser.objects.get(id=user_id)
 			user.is_active = True
 			user.save()
 			return Response(status=status.HTTP_200_OK, data={'response': 'user is active'})
@@ -52,10 +52,10 @@ class UserConfirmAPIView(APIView):
 		serializer.is_valid(raise_exception=True)
 		email = request.data.get('email')
 		try: 
-			user = User.objects.get(email=email)
+			user = CustomUser.objects.get(email=email)
 			send_confirm_email(user)
 			return Response(status=status.HTTP_200_OK)
-		except User.DoesNotExist:
+		except CustomUser.DoesNotExist:
 			return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": 'incorrect email'})
 
 

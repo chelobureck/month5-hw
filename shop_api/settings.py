@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,14 +86,21 @@ WSGI_APPLICATION = 'shop_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('NAME_DB'),
-        'USER': os.environ.get('USER_DB'),
-        'PASSWORD': os.environ.get('PASSWORD_DB'),
-        'HOST': os.environ.get('HOST_DB'),
-        'POST': os.environ.get('PORT_DB')
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get('NAME_DB'),
+#         'USER': os.environ.get('USER_DB'),
+#         'PASSWORD': os.environ.get('PASSWORD_DB'),
+#         'HOST': os.environ.get('HOST_DB'),
+#         'POST': os.environ.get('PORT_DB')
+#     }
+# }
 
 
 # Password validation
@@ -141,3 +149,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_CHARSET = 'utf-8'
 EMAIL_CHARSET = 'utf-8'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = "users.CustomUser"
